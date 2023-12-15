@@ -1,0 +1,60 @@
+env:
+  commonjs: true
+  es6: true
+  node: true
+  jest: true
+extends:
+- 'eslint:recommended'
+globals:
+  Atomics: readonly
+  SharedArrayBuffer: readonly
+  NodeJS: true
+parserOptions:
+  ecmaVersion: 2020
+  sourceType: module
+rules:
+  indent:
+  - error
+  - 2
+  - SwitchCase: 1
+  linebreak-style:
+  - error
+  - unix
+  no-case-declarations:
+  - off
+  no-undef:
+  - error
+  no-useless-escape:
+  - off
+  no-unused-vars:
+  - off # unused가 TS 이슈로 비정상 동작함
+  keyword-spacing: warn
+  comma-spacing: warn
+  space-infix-ops: warn
+  block-spacing: warn
+  dot-location: warn
+  func-call-spacing: off
+  key-spacing: warn
+  no-multi-spaces: warn
+  no-return-assign: warn
+  no-unsafe-negation: warn
+  space-before-blocks: warn
+  space-in-parens: warn
+  spaced-comment: warn
+  template-curly-spacing: warn
+  comma-dangle:
+  - error
+  - objects: never
+    arrays: never
+    imports: never
+    exports: never
+    functions: never
+  object-curly-spacing:
+  - error
+  - never
+  quotes:
+  - error
+  - single
+  semi:
+  - error
+  - never
