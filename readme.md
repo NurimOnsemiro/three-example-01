@@ -1,21 +1,15 @@
 
+Image: node:20-slim
+
 ```bash
 apt-get update
 apt-get install git
-
-```
-
-```bash
-apt-get install -y build-essential libxi-dev libglu1-mesa-dev libglew-dev pkg-config gnupg libcairo2-dev libpango1.0-dev libjpeg-dev libgif-dev librsvg2-dev xvfb mesa-utils libgl1-mesa-dri libglapi-mesa libosmesa6 libgl1-mesa-dev
-Xvfb :99 -screen 0 1024x768x24 </dev/null &
-export DISPLAY=:99
-```
-
-```bash
+cd home
+git clone https://github.com/NurimOnsemiro/three-example-01.git
+cd three-example-01
 export NODE_TLS_REJECT_UNAUTHORIZED=0
 export PUPPETEER_SKIP_DOWNLOAD=true
-```
-
-```npm
+npm install
 npx puppeteer browsers install chrome
+apt-get install -y libasound2 libgdk-pixbuf2.0-dev libgtk-3-dev libxss-dev libnss3-dev
 ```
