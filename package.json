@@ -7,6 +7,9 @@
     "start": "node --max-old-space-size=2048 ./src/app.js",
     "lint": "eslint --cache **/*.js"
   },
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",

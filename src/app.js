@@ -37,25 +37,25 @@ async function setupHttpServer() {
 async function main() {
   const server = await setupHttpServer()
 
-  // const browser = await puppeteer.launch({headless: 'new'})
-  // const page = await browser.newPage()
+  const browser = await puppeteer.launch({headless: 'new'})
+  const page = await browser.newPage()
 
-  // await page.goto('http://localhost:3000/public')
+  await page.goto('http://localhost:3000/public')
 
-  // await page.setViewport({width: 600, height: 600})
+  await page.setViewport({width: 600, height: 600})
 
-  // let cnt = 0
-  // const timer = setInterval(async () => {
-  //   await page.screenshot({
-  //     path: path.join(process.cwd(), `./output/example_${cnt++}.png`),
-  //     fullPage: false
-  //   })
-  //   if (cnt === 12) {
-  //     clearInterval(timer)
-  //     await browser.close()
-  //     server.close()
-  //     process.exit(0)
-  //   }
-  // }, 500)
+  let cnt = 0
+  const timer = setInterval(async () => {
+    await page.screenshot({
+      path: path.join(process.cwd(), `./output/example_${cnt++}.png`),
+      fullPage: false
+    })
+    if (cnt === 12) {
+      clearInterval(timer)
+      await browser.close()
+      server.close()
+      process.exit(0)
+    }
+  }, 500)
 }
 main()
