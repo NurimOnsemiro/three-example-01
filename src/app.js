@@ -4,6 +4,8 @@ import express from 'express'
 import serveStatic from 'serve-static'
 import bodyParser from 'body-parser'
 import http from 'http'
+import {mkdirp} from 'mkdirp'
+import {rimrafSync} from 'rimraf'
 
 /**
  * @returns {http.Server}
@@ -37,7 +39,11 @@ async function setupHttpServer() {
 async function main() {
   const server = await setupHttpServer()
 
-  const browser = await puppeteer.launch({headless: 'new'})
+  const outputDir = path.join(process.cwd(), './output')
+  rimrafSync(outputDir)
+  await mkdirp(outputDir)
+
+  const browser = await puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox']})
   const page = await browser.newPage()
 
   await page.goto('http://localhost:3000/public')
