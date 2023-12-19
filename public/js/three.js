@@ -64,14 +64,12 @@ function loadFbxFile(filePath) {
 
 function loadObjects() {
   // loadObjFile('models/seanwasere.obj')
-  loadFbxFile('models/Alpaca/Alpaca.fbx')
-  // loadFbxFile('models/Artuman/Artuman.fbx')
-  // loadFbxFile('models/Bakun/Bakun.fbx')
+  loadFbxFile('models/pikachu/pikachu.fbx')
   // loadCube()
 }
 
 function setupLight() {
-  const light1 = new THREE.AmbientLight(0xFFFFFF, 400)
+  const light1 = new THREE.AmbientLight(0xFFFFFF, 200)
   scene.add(light1)
 }
 
