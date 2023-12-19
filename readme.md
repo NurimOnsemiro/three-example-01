@@ -12,4 +12,5 @@ export PUPPETEER_SKIP_DOWNLOAD=true
 npm install
 npx puppeteer browsers install chrome
 apt-get install -y libasound2 libgtk-3-dev libnss3
+npm run start
 ```
