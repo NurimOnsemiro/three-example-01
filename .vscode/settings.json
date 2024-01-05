@@ -4,6 +4,7 @@
     "GLTF",
     "clearcoat",
     "importmap",
-    "metalness"
+    "metalness",
+    "mutexify"
   ]
 }

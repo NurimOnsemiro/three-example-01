@@ -86,12 +86,12 @@ function loadGltfFile(filePath) {
 function loadObjects() {
   // loadObjFile('models/seanwasere.obj')
   loadFbxFile('models/pikachu/pikachu.fbx')
-  loadGltfFile('models/house.glb')
+  // loadGltfFile('models/house.glb')
   // loadCube()
 }
 
 function setupLight() {
-  const light1 = new THREE.AmbientLight(0xFFFFFF, 200)
+  const light1 = new THREE.AmbientLight(0xFFFFFF, 100)
   scene.add(light1)
 }
 
@@ -100,7 +100,7 @@ camera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000)
 
 renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
-renderer.setClearColor(0xffffff, 0)
+renderer.setClearColor(0xFFFFFF, 0)
 document.body.appendChild(renderer.domElement)
 
 camera.position.y = 3
@@ -111,7 +111,7 @@ function animate() {
 
   for(const object of objects) {
     // object.rotation.x += 0.01
-    object.rotation.y += 0.02
+    object.rotation.y += 0.03
     // object.rotation.z += 0.01
   }
 
