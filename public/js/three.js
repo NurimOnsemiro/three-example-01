@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import {OBJLoader} from 'three/addons/loaders/OBJLoader'
 import {FBXLoader} from 'three/addons/loaders/FBXLoader'
 import {TGALoader} from 'three/addons/loaders/TGALoader'
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader'
 
 const manager = new THREE.LoadingManager()
 manager.addHandler(/\.tga$/i, new TGALoader())
@@ -62,9 +63,30 @@ function loadFbxFile(filePath) {
   )
 }
 
+function loadGltfFile(filePath) {
+  const loader = new GLTFLoader(manager)
+  loader.load(filePath, 
+    (gltf) => {
+      const data = gltf.scene
+      data.scale.set(10, 10, 10)
+      scene.add(data)
+      objects.push(data)
+    },
+    (evt) => {
+      console.log(evt.loaded / evt.total * 100, '% loaded')
+    },
+    (err) => {
+      if(err){
+        console.error(err)
+      }
+    }
+  )
+}
+
 function loadObjects() {
   // loadObjFile('models/seanwasere.obj')
   loadFbxFile('models/pikachu/pikachu.fbx')
+  loadGltfFile('models/house.glb')
   // loadCube()
 }
 
