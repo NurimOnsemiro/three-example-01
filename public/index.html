@@ -20,7 +20,9 @@
 		<!-- <script type="module" src="./js/three.js"></script> -->
 		<script type="module">
 			const THREE = await import('./js/three.js')
-			THREE.setObjectsRotateRadian(0.03)
+			await THREE.loadObjects()
+			// 아래 함수 호출할 경우 puppeteer에서 캡처가 제대로 안될 수 있습니다.
+			// THREE.setObjectsRotateRadian(0.03)
 		</script>
 	</body>
 </html>

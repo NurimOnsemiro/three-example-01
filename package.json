@@ -28,6 +28,8 @@
     "mutexify": "^1.4.0",
     "puppeteer": "^21.6.1",
     "serve-static": "^1.15.0",
+    "sharp": "^0.33.1",
+    "sharp-apng": "^0.1.5",
     "three": "^0.159.0"
   },
   "description": ""

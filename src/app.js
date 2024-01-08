@@ -12,6 +12,7 @@ const lock = mutexify()
 let server
 
 const NUM_SNAPSHOTS = 12
+const UNIT_RADIAN = (360 / NUM_SNAPSHOTS) * (Math.PI / 180)
 
 async function sleepMs(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -30,6 +31,7 @@ async function setupHttpServer() {
 
     app.post('/snapshot', async (req, res) => {
       await makeSnapshot()
+      await makeGifByPngFiles()
       res.sendStatus(200)
     })
 
@@ -62,6 +64,10 @@ async function makeSnapshot() {
       const page = await browser.newPage()
       await page.setViewport({width: 1024, height: 1024})
       await page.goto('http://localhost:3000/public')
+      await page.evaluate(async () => {
+        const THREE = await import('./js/three.js')
+        await THREE.loadObjects()
+      })
       
       for (let i = 0; i < NUM_SNAPSHOTS; i++) {
         await page.screenshot({
@@ -72,6 +78,7 @@ async function makeSnapshot() {
           // WARNING: evaluate 내부 코드는 문자열 형태로 웹브라우저에 전달되므로, 외부에서 변수를 전달할 수 없습니다.
           const THREE = await import('./js/three.js')
           const UNIT_RADIAN = 0.5235987755982988 // (360 / 12) * (Math.PI / 180)
+          // const UNIT_RADIAN = 0.26166666666666666 // (360 / 24) * (Math.PI / 180)
           THREE.setObjectsRotateRadianOnce(UNIT_RADIAN)
         })
       }
@@ -80,6 +87,17 @@ async function makeSnapshot() {
       resolve()
     })
   })
+}
+
+
+import sharp from 'sharp'
+import apng from 'sharp-apng'
+async function makeGifByPngFiles() {
+  let files = []
+  for (let i = 0; i < NUM_SNAPSHOTS; i++) {
+    files.push(sharp(path.join(process.cwd(), `./output/example_${i}.png`)))
+  }
+  apng.framesToApng(files, path.join(process.cwd(), './output/result.png'))
 }
 
 async function main() {
