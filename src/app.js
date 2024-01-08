@@ -11,6 +11,8 @@ import mutexify from 'mutexify'
 const lock = mutexify()
 let server
 
+const NUM_SNAPSHOTS = 12
+
 async function sleepMs(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
@@ -58,17 +60,20 @@ async function makeSnapshot() {
       
       const browser = await puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox']})
       const page = await browser.newPage()
-      
+      await page.setViewport({width: 1024, height: 1024})
       await page.goto('http://localhost:3000/public')
       
-      await page.setViewport({width: 600, height: 600})
-    
-      for (let i = 0; i < 12; i++) {
+      for (let i = 0; i < NUM_SNAPSHOTS; i++) {
         await page.screenshot({
           path: path.join(process.cwd(), `./output/example_${i}.png`),
           fullPage: false
         })
-        await sleepMs(160)
+        await page.evaluate(async () => {
+          // WARNING: evaluate 내부 코드는 문자열 형태로 웹브라우저에 전달되므로, 외부에서 변수를 전달할 수 없습니다.
+          const THREE = await import('./js/three.js')
+          const UNIT_RADIAN = 0.5235987755982988 // (360 / 12) * (Math.PI / 180)
+          THREE.setObjectsRotateRadianOnce(UNIT_RADIAN)
+        })
       }
       await browser.close()
       release()

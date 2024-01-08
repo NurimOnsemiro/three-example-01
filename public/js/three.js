@@ -48,7 +48,7 @@ function loadFbxFile(filePath) {
           
         }
       })
-      data.scale.set(.01, .01, .01)
+      data.scale.set(.015, .015, .015)
       scene.add(data)
       objects.push(data)
     },
@@ -106,13 +106,33 @@ document.body.appendChild(renderer.domElement)
 camera.position.y = 3
 camera.position.z = 11
 
+let radian = 0
+let radianOnce = 0
+export function setObjectsRotateRadian(value) {
+  radian = value
+}
+export function setObjectsRotateRadianOnce(value) {
+  radianOnce = value
+}
+
+export function hello() {
+  const message = 'hello world~'
+  console.log(message)
+  return message
+}
+
 function animate() {
   requestAnimationFrame(animate)
-
-  for(const object of objects) {
-    // object.rotation.x += 0.01
-    object.rotation.y += 0.03
-    // object.rotation.z += 0.01
+  
+  if(radianOnce !== 0) {
+    for(const object of objects) {
+      object.rotation.y += radianOnce
+    }
+    radianOnce = 0
+  } else {
+    for(const object of objects) {
+      object.rotation.y += radian
+    }
   }
 
   renderer.render(scene, camera)

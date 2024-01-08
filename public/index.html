@@ -17,6 +17,10 @@
 				}
 			}
 		</script>
-		<script type="module" src="./js/three.js"></script>
+		<!-- <script type="module" src="./js/three.js"></script> -->
+		<script type="module">
+			const THREE = await import('./js/three.js')
+			THREE.setObjectsRotateRadian(0.03)
+		</script>
 	</body>
 </html>
