@@ -31,7 +31,7 @@ async function setupHttpServer() {
 
     app.post('/snapshot', async (req, res) => {
       await makeSnapshot()
-      await makeGifByPngFiles()
+      // await makeGifByPngFiles()
       res.sendStatus(200)
     })
 
@@ -56,9 +56,12 @@ async function setupHttpServer() {
 async function makeSnapshot() {
   return new Promise(resolve => {
     lock(async release => {
+      console.time('Snapshot')
       const outputDir = path.join(process.cwd(), './output')
       rimrafSync(outputDir)
       await mkdirp(outputDir)
+      console.log('clear prev files')
+      console.timeLog('Snapshot')
       
       const browser = await puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox']})
       const page = await browser.newPage()
@@ -68,6 +71,8 @@ async function makeSnapshot() {
         const THREE = await import('./js/three.js')
         await THREE.loadObjects()
       })
+      console.log('create puppeteer and goto website')
+      console.timeLog('Snapshot')
       
       for (let i = 0; i < NUM_SNAPSHOTS; i++) {
         await page.screenshot({
@@ -82,8 +87,12 @@ async function makeSnapshot() {
           THREE.setObjectsRotateRadianOnce(UNIT_RADIAN)
         })
       }
+      console.log('create snapshot')
+      console.timeLog('Snapshot')
       await browser.close()
       release()
+      console.log('done')
+      console.timeEnd('Snapshot')
       resolve()
     })
   })
