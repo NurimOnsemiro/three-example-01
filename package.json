@@ -5,7 +5,8 @@
   "scripts": {
     "nvm:setup": "nvm install 20.9.0 && nvm use 20.9.0",
     "start": "node --max-old-space-size=2048 ./src/app.js",
-    "lint": "eslint --cache **/*.js"
+    "lint": "eslint --cache **/*.js",
+    "inspect": "node --inspect ./src/app.js"
   },
   "engines": {
     "node": ">=20.0.0"

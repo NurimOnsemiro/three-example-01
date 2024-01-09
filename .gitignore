@@ -127,4 +127,5 @@ dist
 .pnp.*
 output/
 
-public/models/
+/public/models/*
+!/public/models/house.glb
