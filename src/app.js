@@ -1,16 +1,19 @@
 import path from 'path'
-import puppeteer from 'puppeteer'
+import puppeteer, {Browser} from 'puppeteer'
 import express from 'express'
 import serveStatic from 'serve-static'
 import bodyParser from 'body-parser'
-import http from 'http'
+import http, {Server} from 'http'
 import {mkdirp} from 'mkdirp'
 import {rimrafSync} from 'rimraf'
 import mutexify from 'mutexify'
 
 const lock = mutexify()
+/** @type {Server} */
 let server
 
+/** @type {Browser} */
+let browser
 const NUM_SNAPSHOTS = 12
 const UNIT_RADIAN = (360 / NUM_SNAPSHOTS) * (Math.PI / 180)
 
@@ -19,7 +22,7 @@ async function sleepMs(ms) {
 }
 
 /**
- * @returns {http.Server}
+ * @returns {Server}
  */
 async function setupHttpServer() {
   return new Promise((resolve, reject) => {
@@ -68,7 +71,6 @@ async function makeSnapshot() {
       console.log('clear prev files')
       console.timeLog('Snapshot')
       
-      const browser = await puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox']})
       const page = await browser.newPage()
       await page.setViewport({width: 1024, height: 1024})
       await page.goto('http://localhost:3000/public')
@@ -94,7 +96,7 @@ async function makeSnapshot() {
       }
       console.log('create snapshot')
       console.timeLog('Snapshot')
-      await browser.close()
+      // await browser.close()
       release()
       console.log('done')
       console.timeEnd('Snapshot')
@@ -103,6 +105,9 @@ async function makeSnapshot() {
   })
 }
 
+function setupPuppeteer() {
+  return puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox']})
+}
 
 import sharp from 'sharp'
 import apng from 'sharp-apng'
@@ -115,6 +120,7 @@ async function makeGifByPngFiles() {
 }
 
 async function main() {
+  browser = await setupPuppeteer()
   server = await setupHttpServer()
 }
 main()
