@@ -31,7 +31,10 @@ async function setupHttpServer() {
 
     app.post('/snapshot', async (req, res) => {
       await makeSnapshot()
-      // await makeGifByPngFiles()
+      const makeApng = String(req.headers['3d-snapshot-generate-apng'] ?? 'false').toLowerCase() === 'true'
+      if (makeApng) {
+        await makeGifByPngFiles()
+      }
       res.sendStatus(200)
     })
 
@@ -50,6 +53,8 @@ async function setupHttpServer() {
     server.on('close', () => {
       console.log('Server closed successfully')
     })
+
+    return server
   })
 }
 

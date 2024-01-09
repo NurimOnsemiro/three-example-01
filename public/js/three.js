@@ -15,44 +15,57 @@ let objects = []
 function loadCube() {
   const geometry = new THREE.BoxGeometry(1, 1, 1)
   const material = new THREE.MeshBasicMaterial({color: 0x00ff00})
-  const cube = new THREE.Mesh(geometry, material)
-  scene.add(cube)
-  objects.push(cube)
-  setupCamera(cube)
-  return cube
+  const object = new THREE.Mesh(geometry, material)
+  scene.add(object)
+  objects.push(object)
+  setupCamera(object)
+  return object
 }
 
 function loadObjFile(filePath) {
   const loader = new OBJLoader()
-  return commonLoader(loader, filePath, (arg) => {
-    arg.scale.set(.1, .1, .1)
-    scene.add(arg)
-    objects.push(arg)
-    return arg
+  return commonLoader(loader, filePath, (object) => {
+    scene.add(object)
+    objects.push(object)
+    return object
   })
 }
 
 function loadFbxFile(filePath) {
   const loader = new FBXLoader(manager)
-  return commonLoader(loader, filePath, (arg) => {
-    arg.traverse(child => {
-      if(child.isMesh) {}
-    })
-    arg.scale.set(.015, .015, .015)
-    scene.add(arg)
-    objects.push(arg)
-    return arg
+  return commonLoader(loader, filePath, (object) => {
+    scene.add(object)
+    objects.push(object)
+    return object
   })
 }
 
 async function loadGltfFile(filePath) {
   const loader = new GLTFLoader(manager)
-  return commonLoader(loader, filePath, (arg) => {
-      const data = arg.scene
-      scene.add(data)
-      objects.push(data)
+  return commonLoader(loader, filePath, (objectMeta) => {
+      const object = objectMeta.scene
+      scene.add(object)
+      objects.push(object)
       console.log('loadGltfFile completed')
-      return data
+      return object
+  })
+}
+
+function adjustSize(object) {
+  const box = new THREE.Box3().setFromObject(object)
+  const size = box.getSize(new THREE.Vector3()).length()
+  const scalar = 1
+  console.log(box, size)
+  object.scale.multiplyScalar(scalar/size)
+}
+
+function adjustMaterial(object) {
+  object.traverse(child => {
+    if(child instanceof THREE.Mesh) {
+      const material = child.material
+      // console.log(material)
+      material.color = new THREE.Color(3, 3, 3)
+    }
   })
 }
 
@@ -61,6 +74,8 @@ async function commonLoader(loader, filePath, callback) {
     loader.load(filePath, 
       (arg) => {
         const model = callback(arg)
+        adjustSize(model)
+        adjustMaterial(model)
         setupCamera(model)
         resolve()
       },
@@ -90,17 +105,23 @@ function setupCamera(model) {
 
 export async function loadObjects() {
   // loadObjFile('models/seanwasere.obj')
+  // loadFbxFile('models/Bamalron/Bamalron.fbx')
+  // loadFbxFile('models/Alpaca.fbx')
+  // loadFbxFile('models/Basilisk/Basilisk.fbx')
+  // loadFbxFile('models/eyeball/eyeball.fbx')
+  // loadFbxFile('models/BatraBeholder/BatraBeholder.fbx')
   // loadFbxFile('models/pikachu/pikachu.fbx')
-  // await loadGltfFile('models/house.glb')
-  await loadGltfFile('models/cargo_ship.glb')
+  await loadGltfFile('models/house.glb')
+  // await loadGltfFile('models/fbi__cs2_agent_model_no1.glb')
+  // await loadGltfFile('models/cargo_ship.glb')
   // loadCube()
 }
 
-function setupLight() {
-  const light1 = new THREE.AmbientLight(0xFFFFFF, 2)
+export function setupLight() {
+  const light1 = new THREE.AmbientLight(0xFFFFFF, 1)
   scene.add(light1)
-  // const pointLight1 = new THREE.PointLight(0xffffff, 10, 100)
-  // pointLight1.position.set(0, 5, 0)
+  // const pointLight1 = new THREE.PointLight(0xffffff, 10000, 1000)
+  // pointLight1.position.set(3, 5, 0)
   // scene.add(pointLight1)
 }
 
