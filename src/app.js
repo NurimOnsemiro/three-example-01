@@ -16,6 +16,7 @@ let server
 let browser
 const NUM_SNAPSHOTS = 12
 const UNIT_RADIAN = (360 / NUM_SNAPSHOTS) * (Math.PI / 180)
+let printDetailLog = false
 
 async function sleepMs(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
@@ -33,6 +34,7 @@ async function setupHttpServer() {
     app.use(bodyParser.urlencoded({extended: false}))
 
     app.post('/snapshot', async (req, res) => {
+      printDetailLog = String(req.headers['3d-snapshot-detail-log'] ?? 'false').toLowerCase() === 'true'
       await makeSnapshot()
       const makeApng = String(req.headers['3d-snapshot-generate-apng'] ?? 'false').toLowerCase() === 'true'
       if (makeApng) {
@@ -61,6 +63,12 @@ async function setupHttpServer() {
   })
 }
 
+function logTimestampWrap(title, message) {
+  if (!printDetailLog) return
+  console.log(message)
+  console.timeLog(title)
+}
+
 async function makeSnapshot() {
   return new Promise(resolve => {
     lock(async release => {
@@ -68,8 +76,7 @@ async function makeSnapshot() {
       const outputDir = path.join(process.cwd(), './output')
       rimrafSync(outputDir)
       await mkdirp(outputDir)
-      console.log('clear prev files')
-      console.timeLog('Snapshot')
+      logTimestampWrap('Snapshot', 'clear prev files')
       
       const page = await browser.newPage()
       await page.setViewport({width: 1024, height: 1024})
@@ -78,16 +85,14 @@ async function makeSnapshot() {
         const THREE = await import('./js/three.js')
         await THREE.loadObjects()
       })
-      console.log('create puppeteer and goto website')
-      console.timeLog('Snapshot')
+      logTimestampWrap('Snapshot', 'create puppeteer and goto website')
       
       for (let i = 0; i < NUM_SNAPSHOTS; i++) {
         await page.screenshot({
           path: path.join(process.cwd(), `./output/example_${i}.png`),
           fullPage: false
         })
-        console.log('capture puppeteer screenshot')
-        console.timeLog('Snapshot')
+        logTimestampWrap('Snapshot', 'capture puppeteer screenshot')
         await page.evaluate(async () => {
           // WARNING: evaluate 내부 코드는 문자열 형태로 웹브라우저에 전달되므로, 외부에서 변수를 전달할 수 없습니다.
           const THREE = await import('./js/three.js')
@@ -95,11 +100,9 @@ async function makeSnapshot() {
           // const UNIT_RADIAN = 0.26166666666666666 // (360 / 24) * (Math.PI / 180)
           THREE.setObjectsRotateRadianOnce(UNIT_RADIAN)
         })
-        console.log('rotate 3d model')
-        console.timeLog('Snapshot')
+        logTimestampWrap('Snapshot', 'rotate 3d model')
       }
-      console.log('create snapshot')
-      console.timeLog('Snapshot')
+      logTimestampWrap('Snapshot', 'create snapshot')
       await page.close()
       // await browser.close()
       release()
