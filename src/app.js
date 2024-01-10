@@ -86,6 +86,8 @@ async function makeSnapshot() {
           path: path.join(process.cwd(), `./output/example_${i}.png`),
           fullPage: false
         })
+        console.log('capture puppeteer screenshot')
+        console.timeLog('Snapshot')
         await page.evaluate(async () => {
           // WARNING: evaluate 내부 코드는 문자열 형태로 웹브라우저에 전달되므로, 외부에서 변수를 전달할 수 없습니다.
           const THREE = await import('./js/three.js')
@@ -93,6 +95,8 @@ async function makeSnapshot() {
           // const UNIT_RADIAN = 0.26166666666666666 // (360 / 24) * (Math.PI / 180)
           THREE.setObjectsRotateRadianOnce(UNIT_RADIAN)
         })
+        console.log('rotate 3d model')
+        console.timeLog('Snapshot')
       }
       console.log('create snapshot')
       console.timeLog('Snapshot')
