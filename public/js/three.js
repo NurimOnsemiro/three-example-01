@@ -107,6 +107,7 @@ export async function loadObjects() {
   // await loadObjFile('models/seanwasere.obj')
   // await loadObjFile('models/teapot.obj')
   // await loadFbxFile('models/Bamalron/Bamalron.fbx')
+  // await loadFbxFile('models/Baphomet.fbx')
   // await loadFbxFile('models/Alpaca.fbx')
   // await loadFbxFile('models/Basilisk/Basilisk.fbx')
   // await loadFbxFile('models/eyeball/eyeball.fbx')
@@ -116,6 +117,8 @@ export async function loadObjects() {
   // await loadGltfFile('models/house-v2.glb')
   // await loadGltfFile('models/fbi__cs2_agent_model_no1.glb')
   // await loadGltfFile('models/cargo_ship.glb')
+  // await loadGltfFile('models/Baphomet.glb')
+  // await loadGltfFile('models/Bamalron.glb')
   // await loadCube()
 }
 

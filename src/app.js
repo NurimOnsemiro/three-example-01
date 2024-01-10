@@ -115,7 +115,8 @@ async function makeSnapshot() {
 }
 
 function setupPuppeteer() {
-  return puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox']})
+  return puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox', '--hide-scrollbars', '--mute-audio']})
+  // return puppeteer.launch({headless: 'new', args: ['--no-sandbox', '--disable-setuid-sandbox', '--hide-scrollbars', '--mute-audio', '--disable-gpu']})
 }
 
 import sharp from 'sharp'
