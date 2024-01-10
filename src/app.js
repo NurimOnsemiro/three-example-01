@@ -100,6 +100,7 @@ async function makeSnapshot() {
       }
       console.log('create snapshot')
       console.timeLog('Snapshot')
+      await page.close()
       // await browser.close()
       release()
       console.log('done')
