@@ -72,6 +72,7 @@ function logTimestampWrap(title, message) {
 async function makeSnapshot() {
   return new Promise(resolve => {
     lock(async release => {
+      console.log('Start makeSnapshot')
       console.time('Snapshot')
       const outputDir = path.join(process.cwd(), './output')
       rimrafSync(outputDir)

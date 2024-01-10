@@ -12,7 +12,7 @@ let camera
 let renderer
 let objects = []
 
-function loadCube() {
+async function loadCube() {
   const geometry = new THREE.BoxGeometry(1, 1, 1)
   const material = new THREE.MeshBasicMaterial({color: 0x00ff00})
   const object = new THREE.Mesh(geometry, material)
@@ -22,7 +22,7 @@ function loadCube() {
   return object
 }
 
-function loadObjFile(filePath) {
+async function loadObjFile(filePath) {
   const loader = new OBJLoader()
   return commonLoader(loader, filePath, (object) => {
     scene.add(object)
@@ -31,7 +31,7 @@ function loadObjFile(filePath) {
   })
 }
 
-function loadFbxFile(filePath) {
+async function loadFbxFile(filePath) {
   const loader = new FBXLoader(manager)
   return commonLoader(loader, filePath, (object) => {
     scene.add(object)
@@ -104,17 +104,19 @@ function setupCamera(model) {
 }
 
 export async function loadObjects() {
-  // loadObjFile('models/seanwasere.obj')
-  // loadFbxFile('models/Bamalron/Bamalron.fbx')
-  // loadFbxFile('models/Alpaca.fbx')
-  // loadFbxFile('models/Basilisk/Basilisk.fbx')
-  // loadFbxFile('models/eyeball/eyeball.fbx')
-  // loadFbxFile('models/BatraBeholder/BatraBeholder.fbx')
-  // loadFbxFile('models/pikachu/pikachu.fbx')
+  // await loadObjFile('models/seanwasere.obj')
+  // await loadObjFile('models/teapot.obj')
+  // await loadFbxFile('models/Bamalron/Bamalron.fbx')
+  // await loadFbxFile('models/Alpaca.fbx')
+  // await loadFbxFile('models/Basilisk/Basilisk.fbx')
+  // await loadFbxFile('models/eyeball/eyeball.fbx')
+  // await loadFbxFile('models/BatraBeholder/BatraBeholder.fbx')
+  // await loadFbxFile('models/pikachu/Pikachu.fbx')
   await loadGltfFile('models/house.glb')
+  // await loadGltfFile('models/house-v2.glb')
   // await loadGltfFile('models/fbi__cs2_agent_model_no1.glb')
   // await loadGltfFile('models/cargo_ship.glb')
-  // loadCube()
+  // await loadCube()
 }
 
 export function setupLight() {
