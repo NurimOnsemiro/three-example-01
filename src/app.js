@@ -7,6 +7,9 @@ import http, {Server} from 'http'
 import {mkdirp} from 'mkdirp'
 import {rimrafSync} from 'rimraf'
 import mutexify from 'mutexify'
+import fs from 'fs'
+
+const convertFbxToGlbFunc = fs.readFileSync('./src/evaluate-fbx.js').toString()
 
 const lock = mutexify()
 /** @type {Server} */
@@ -43,6 +46,14 @@ async function setupHttpServer() {
       res.sendStatus(200)
     })
 
+    app.post('/fbx-to-glb', async (req, res) => {
+      const fileName = req.body.fileName
+      console.log('fbx to glb:', fileName)
+      await convertFbxToGlb(fileName)
+      
+      res.sendStatus(200)
+    })
+
     const server = http.createServer(app)
 
     server.listen(app.get('port'), () => {
@@ -61,6 +72,70 @@ async function setupHttpServer() {
 
     return server
   })
+}
+
+async function convertFbxToGlb(filePath) {
+  return new Promise(resolve => {
+    lock(async release => {
+      const outputDir = path.join(process.cwd(), './exported')
+      rimrafSync(outputDir)
+      await mkdirp(outputDir)
+      
+      const page = await browser.newPage()
+      await page.setViewport({width: 1024, height: 1024})
+      await page.goto(`http://localhost:3000/public/?modelPath=${filePath}`)
+
+      page.
+        on('console', message => {
+          console.log('console:', message.text())
+        }).
+        on('response', response => {
+          // console.log(response)
+        }).
+        on('requestfailed', request => {
+          console.log(request)
+        }).
+        on('pageerror', err => {
+          console.log(err)
+        })
+
+      // const result = await page.evaluate(async () => {
+      //   const THREE = await import('./js/fbx-to-glb.js')
+      //   const result = await THREE.exportFbxToGlb()
+      //   return result
+      // })
+      const result = await page.evaluate(async () => {
+        const THREE = await import('./js/fbx-to-glb.js')
+        const result = await THREE.loadFbx('models/Bamalron/Bamalron.fbx')
+        return result
+      })
+      // console.log(JSON.parse(result))
+
+      if (result != null) {
+        fs.writeFileSync('./temp.json', Buffer.from(result))
+      }
+
+      // if (result != null) {
+      //   const glb = decodeGlb(result)
+      //   // console.log(glb)
+      //   fs.writeFileSync('./exported/result.glb', glb)
+      // }
+
+      await page.close()
+      release()
+      resolve()
+    })
+  })
+}
+
+function decodeGlb(encodedStr) {
+  const decoded = atob(encodedStr) // text -> binary
+  let binary = []
+  for (let i = 0;i < decoded.length;i++) {
+    binary.push(decoded.charCodeAt(i))
+  }
+  const glb = new Uint8Array(binary)
+  return glb
 }
 
 function logTimestampWrap(title, message) {
@@ -121,6 +196,7 @@ function setupPuppeteer() {
 
 import sharp from 'sharp'
 import apng from 'sharp-apng'
+import {atob} from 'buffer'
 async function makeGifByPngFiles() {
   let files = []
   for (let i = 0; i < NUM_SNAPSHOTS; i++) {

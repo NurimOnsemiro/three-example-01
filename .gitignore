@@ -129,3 +129,4 @@ output/
 
 /public/models/*
 !/public/models/house.glb
+/exported

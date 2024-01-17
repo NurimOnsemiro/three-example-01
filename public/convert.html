@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>My first three.js app</title>
+		<style>
+			body { margin: 0; }
+			canvas { display: block; }
+		</style>
+	</head>
+	<body>
+		<script type="importmap">
+			{
+				"imports": {
+					"three": "https://unpkg.com/three@0.159.0/build/three.module.js",
+					"three/addons/": "https://unpkg.com/three@0.159.0/examples/jsm/"
+				}
+			}
+		</script>
+		<script type="module">
+			console.log('start converting')
+			// export async function fbxToGlb() {
+			// 	const THREE = await import('./js/fbx-to-glb.js')
+			// 	const result = await THREE.exportFbxToGlb()
+			// 	console.log(result)
+			// 	return result
+			// }
+			// fbxToGlb()
+			// const THREE = await import('./js/fbx-to-glb.js')
+			// const result = await THREE.exportFbxToGlb()
+			// console.log(result)
+		</script>
+	</body>
+</html>

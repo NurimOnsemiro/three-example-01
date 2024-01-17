@@ -34,6 +34,22 @@ async function loadObjFile(filePath) {
 async function loadFbxFile(filePath) {
   const loader = new FBXLoader(manager)
   return commonLoader(loader, filePath, (object) => {
+    // const textureLoader = new THREE.TextureLoader(manager)
+    // const textureLoader = new TGALoader(manager)
+    // object.traverse(child => {
+    //   if (child.isMesh) {
+    //     // https://threejs.org/docs/#api/en/objects/Mesh
+    //     const diffuseTexture = 'models/Bamalron/Bamalron_DIFF.tga'
+    //     textureLoader.load(diffuseTexture, (texture) => {
+    //       child.material.map = texture
+    //       child.material.needsupdate = true
+    //       console.log(texture)
+    //     })
+    //     child.castShadow = true
+    //     child.receiveShadow = true
+    //   }
+    // })
+
     scene.add(object)
     objects.push(object)
     return object
@@ -43,11 +59,12 @@ async function loadFbxFile(filePath) {
 async function loadGltfFile(filePath) {
   const loader = new GLTFLoader(manager)
   return commonLoader(loader, filePath, (objectMeta) => {
-      const object = objectMeta.scene
-      scene.add(object)
-      objects.push(object)
-      console.log('loadGltfFile completed')
-      return object
+    console.log(objectMeta)
+    const object = objectMeta.scene
+    scene.add(object)
+    objects.push(object)
+    console.log('loadGltfFile completed')
+    return object
   })
 }
 
@@ -64,7 +81,7 @@ function adjustMaterial(object) {
     if(child instanceof THREE.Mesh) {
       const material = child.material
       // console.log(material)
-      const colorValue = 1
+      const colorValue = 3
       material.color = new THREE.Color(colorValue,colorValue,colorValue)
     }
   })
@@ -84,7 +101,10 @@ async function commonLoader(loader, filePath, callback) {
         console.log(evt.loaded / evt.total * 100, '% loaded')
       },
       (err) => {
-        if(err) reject(err)
+        if(err) {
+          console.error('error:', err)
+          reject(err)
+        }
       }
     )
   })
@@ -118,13 +138,24 @@ export async function loadObjects() {
     // await loadFbxFile('models/BatraBeholder/BatraBeholder.fbx')
     // await loadFbxFile('models/pikachu/Pikachu.fbx')
     // await loadFbxFile('models/BAC_Batman70s_rocksteady/batman70.fbx')
+    // await loadGltfFile('models/Alpaca.glb')
+    // await loadGltfFile('models/BatraBeholder-v1.glb')
+    // await loadGltfFile('models/batman70-v1.glb')
+    // await loadGltfFile('models/batman70t.glb')
+    // await loadGltfFile('models/batman-v1.glb')
+    // await loadGltfFile('models/catwoman.glb')
+    // await loadGltfFile('models/fbi-agent-v1.glb')
     // await loadGltfFile('models/house.glb')
     // await loadGltfFile('models/house-v2.glb')
-    // await loadGltfFile('models/fbi__cs2_agent_model_no1.glb')
-    await loadGltfFile('models/Pikachu.gltf')
+    // await loadGltfFile('models/eyeball-v1.glb')
+    // await loadGltfFile('models/pikachuF.glb')
+    await loadGltfFile('models/pikachu-v1.glb')
     // await loadGltfFile('models/cargo_ship.glb')
-    // await loadGltfFile('models/Baphomet.glb')
-    // await loadGltfFile('models/Bamalron.glb')
+    // await loadGltfFile('models/pantherboss-v1.glb')
+    // await loadGltfFile('models/Baphomet-v1.glb')
+    // await loadGltfFile('models/Cyprys_Houseobj-v1.glb')
+    // await loadGltfFile('models/Bamalron-v1.glb')
+    // await loadGltfFile('models/bamalron_out/Bamalron.gltf')
     // await loadCube()
   } catch (err) {
     console.error(err)
