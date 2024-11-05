@@ -37,8 +37,9 @@ async function setupHttpServer() {
     app.use(bodyParser.urlencoded({extended: false}))
 
     app.post('/snapshot', async (req, res) => {
+      const targetFile = req.headers['3d-snapshot-target-file'] ?? ''
       printDetailLog = String(req.headers['3d-snapshot-detail-log'] ?? 'false').toLowerCase() === 'true'
-      await makeSnapshot()
+      await makeSnapshot(targetFile)
       const makeApng = String(req.headers['3d-snapshot-generate-apng'] ?? 'false').toLowerCase() === 'true'
       if (makeApng) {
         await makeGifByPngFiles()
@@ -144,7 +145,7 @@ function logTimestampWrap(title, message) {
   console.timeLog(title)
 }
 
-async function makeSnapshot() {
+async function makeSnapshot(input) {
   return new Promise(resolve => {
     lock(async release => {
       console.log('Start makeSnapshot')
@@ -157,10 +158,11 @@ async function makeSnapshot() {
       const page = await browser.newPage()
       await page.setViewport({width: 1024, height: 1024})
       await page.goto('http://localhost:3000/public')
-      await page.evaluate(async () => {
-        const THREE = await import('./js/three.js')
-        await THREE.loadObjects()
-      })
+      await page.evaluate(async (targetFile) => {
+        const THREE = await import(`${'./js/three.js'}`)
+        await THREE.loadObjects(targetFile)
+      }, input)
+      // await page.evaluate(`three.loadObjects("${input}")`) // typescript에서 사용
       logTimestampWrap('Snapshot', 'create puppeteer and goto website')
       
       for (let i = 0; i < NUM_SNAPSHOTS; i++) {
@@ -169,13 +171,11 @@ async function makeSnapshot() {
           fullPage: false
         })
         logTimestampWrap('Snapshot', 'capture puppeteer screenshot')
-        await page.evaluate(async () => {
-          // WARNING: evaluate 내부 코드는 문자열 형태로 웹브라우저에 전달되므로, 외부에서 변수를 전달할 수 없습니다.
-          const THREE = await import('./js/three.js')
-          const UNIT_RADIAN = 0.5235987755982988 // (360 / 12) * (Math.PI / 180)
-          // const UNIT_RADIAN = 0.26166666666666666 // (360 / 24) * (Math.PI / 180)
+        await page.evaluate(async (captureCount) => {
+          const THREE = await import(`${'./js/three.js'}`)
+          const UNIT_RADIAN = (360 / captureCount) * (Math.PI / 180)
           THREE.setObjectsRotateRadianOnce(UNIT_RADIAN)
-        })
+        }, 12)
         logTimestampWrap('Snapshot', 'rotate 3d model')
       }
       logTimestampWrap('Snapshot', 'create snapshot')
@@ -196,7 +196,7 @@ function setupPuppeteer() {
 
 import sharp from 'sharp'
 import apng from 'sharp-apng'
-import {atob} from 'buffer'
+import {atob, btoa} from 'buffer'
 async function makeGifByPngFiles() {
   let files = []
   for (let i = 0; i < NUM_SNAPSHOTS; i++) {

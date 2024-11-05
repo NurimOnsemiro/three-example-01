@@ -124,38 +124,9 @@ function setupCamera(model) {
   camera.updateProjectionMatrix()
 }
 
-export async function loadObjects() {
+export async function loadObjects(input) {
   try {
-    // await loadObjFile('models/seanwasere.obj')
-    // await loadObjFile('models/teapot.obj')
-    // await loadObjFile('models/airboat.obj')
-    // await loadObjFile('models/BAC_Batman70s_rocksteady/batman.obj')
-    // await loadFbxFile('models/Bamalron/Bamalron.fbx')
-    // await loadFbxFile('models/Baphomet.fbx')
-    // await loadFbxFile('models/Alpaca.fbx')
-    // await loadFbxFile('models/Basilisk/Basilisk.fbx')
-    // await loadFbxFile('models/eyeball/eyeball.fbx')
-    // await loadFbxFile('models/BatraBeholder/BatraBeholder.fbx')
-    // await loadFbxFile('models/pikachu/Pikachu.fbx')
-    // await loadFbxFile('models/BAC_Batman70s_rocksteady/batman70.fbx')
-    // await loadGltfFile('models/Alpaca.glb')
-    // await loadGltfFile('models/BatraBeholder-v1.glb')
-    // await loadGltfFile('models/batman70-v1.glb')
-    // await loadGltfFile('models/batman70t.glb')
-    // await loadGltfFile('models/batman-v1.glb')
-    // await loadGltfFile('models/catwoman.glb')
-    // await loadGltfFile('models/fbi-agent-v1.glb')
-    // await loadGltfFile('models/house.glb')
-    // await loadGltfFile('models/house-v2.glb')
-    // await loadGltfFile('models/eyeball-v1.glb')
-    // await loadGltfFile('models/pikachuF.glb')
-    await loadGltfFile('models/pikachu-v1.glb')
-    // await loadGltfFile('models/cargo_ship.glb')
-    // await loadGltfFile('models/pantherboss-v1.glb')
-    // await loadGltfFile('models/Baphomet-v1.glb')
-    // await loadGltfFile('models/Cyprys_Houseobj-v1.glb')
-    // await loadGltfFile('models/Bamalron-v1.glb')
-    // await loadGltfFile('models/bamalron_out/Bamalron.gltf')
+    await loadGltfFile(input)
     // await loadCube()
   } catch (err) {
     console.error(err)
@@ -180,7 +151,7 @@ camera = new THREE.PerspectiveCamera(
 
 renderer = new THREE.WebGLRenderer()
 renderer.setSize(window.innerWidth, window.innerHeight)
-renderer.setClearColor(0xFFFFFF, 0)
+renderer.setClearColor(0x000000, 1)
 document.body.appendChild(renderer.domElement)
 
 camera.position.y = 3
